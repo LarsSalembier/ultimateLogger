@@ -1,6 +1,5 @@
 use std::fs::{File, OpenOptions};
 use std::io::prelude::*;
-use std::process;
 
 pub struct LogFile {
     file: File,
@@ -14,9 +13,10 @@ impl LogFile {
             .create(true)
             .open(path.clone())
             .unwrap_or_else(|e| {
-                eprintln!("Error opening file: {}", e);
-
-                process::exit(1);
+                panic!(
+                    "Error opening log file: {}\nPath to log file was: {}",
+                    e, path
+                );
             });
 
         Self { file }
@@ -26,9 +26,10 @@ impl LogFile {
         self.file
             .write_all(to_write.as_bytes())
             .unwrap_or_else(|e| {
-                eprintln!("Error writing to file: {}", e);
-
-                process::exit(1);
+                panic!(
+                    "Error writing to log file: {}\nText to be written was:\n{}",
+                    e, to_write
+                );
             })
     }
 }
