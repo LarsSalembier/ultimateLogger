@@ -2,7 +2,7 @@ use ultimate_logger::log_level;
 use ultimate_logger::Logger;
 
 fn main() {
-    let mut logger = Logger::new(log_level::LogLevel::Info);
+    let mut logger = Logger::new(String::from("main"), log_level::LogLevel::Info);
 
     logger.trace("This is a trace message");
     logger.debug("This is a debug message");

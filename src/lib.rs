@@ -1,13 +1,12 @@
-pub mod log_file;
+mod log_file;
 pub mod log_level;
 
 use chrono::offset;
 use colored::ColoredString;
 use log_file::LogFile;
 
-const NAME: &str = "console";
-
 pub struct Logger {
+    name: String,
     min_level: log_level::LogLevel,
     log_file: Option<log_file::LogFile>,
     write_to_console: bool,
@@ -15,8 +14,9 @@ pub struct Logger {
 }
 
 impl Logger {
-    pub fn new(min_level: log_level::LogLevel) -> Self {
+    pub fn new(name: String, min_level: log_level::LogLevel) -> Self {
         Self {
+            name,
             min_level,
             log_file: None,
             write_to_console: true,
@@ -25,6 +25,7 @@ impl Logger {
     }
 
     pub fn new_to_file(
+        name: String,
         min_level: log_level::LogLevel,
         filepath: String,
         write_to_console_too: bool,
@@ -32,6 +33,7 @@ impl Logger {
         let log_file = log_file::LogFile::new(&filepath);
 
         Self {
+            name,
             min_level,
             log_file: Some(log_file),
             write_to_console: write_to_console_too,
@@ -39,8 +41,8 @@ impl Logger {
         }
     }
 
-    pub fn new_default() -> Self {
-        Self::new(log_level::LogLevel::Info)
+    pub fn new_default(name: String) -> Self {
+        Self::new(name, log_level::LogLevel::Info)
     }
 
     fn get_date_time() -> String {
@@ -55,21 +57,21 @@ impl Logger {
         level.color_string(message)
     }
 
-    fn log_to_file(log_file: &mut LogFile, level: log_level::LogLevel, message: &str) {
+    fn log_to_file(log_file: &mut LogFile, level: log_level::LogLevel, message: &str, name: &str) {
         log_file.write(format!(
             "[{}] [{}] [{}] {}\n",
             Logger::get_date_time(),
-            NAME,
+            name,
             level.to_string(),
             message
         ));
     }
 
-    fn log_to_console(level: log_level::LogLevel, message: &str) {
+    fn log_to_console(level: log_level::LogLevel, message: &str, name: &str) {
         println!(
             "[{}] [{}] [{}] {}",
             Logger::get_date_time(),
-            NAME,
+            name,
             Logger::get_colored_level_name(level),
             Logger::get_colored_message(level, message)
         );
@@ -79,12 +81,12 @@ impl Logger {
         if level as u8 >= self.min_level as u8 {
             if self.write_to_file {
                 if let Some(log_file) = &mut self.log_file {
-                    Logger::log_to_file(log_file, level, message);
+                    Logger::log_to_file(log_file, level, message, &self.name);
                 }
             }
 
             if self.write_to_console {
-                Logger::log_to_console(level, message);
+                Logger::log_to_console(level, message, &self.name);
             }
 
             return true;
@@ -128,21 +130,21 @@ mod tests {
 
     #[test]
     fn new_logger_should_have_correct_min_level() {
-        let logger = Logger::new(log_level::LogLevel::Trace);
+        let logger = Logger::new(String::from("test"), log_level::LogLevel::Trace);
 
         assert_eq!(logger.min_level, log_level::LogLevel::Trace);
     }
 
     #[test]
     fn new_logger_should_write_to_console() {
-        let logger = Logger::new(log_level::LogLevel::Trace);
+        let logger = Logger::new(String::from("test"), log_level::LogLevel::Trace);
 
         assert_eq!(logger.write_to_console, true);
     }
 
     #[test]
     fn new_logger_should_not_write_to_file() {
-        let logger = Logger::new(log_level::LogLevel::Trace);
+        let logger = Logger::new(String::from("test"), log_level::LogLevel::Trace);
 
         assert_eq!(logger.write_to_file, false);
     }
@@ -151,7 +153,7 @@ mod tests {
 
     #[test]
     fn new_default_logger_should_have_level_info() {
-        let logger = Logger::new_default();
+        let logger = Logger::new_default(String::from("test"));
 
         assert_eq!(logger.min_level, log_level::LogLevel::Info);
     }
@@ -160,32 +162,48 @@ mod tests {
 
     #[test]
     fn new_logger_to_file_should_enable_write_to_file() {
-        let logger =
-            Logger::new_to_file(log_level::LogLevel::Trace, String::from("test.log"), false);
+        let logger = Logger::new_to_file(
+            String::from("test"),
+            log_level::LogLevel::Trace,
+            String::from("test.log"),
+            false,
+        );
 
         assert_eq!(logger.write_to_file, true);
     }
 
     #[test]
     fn new_logger_to_file_which_also_writes_to_console_should_enable_write_to_console() {
-        let logger =
-            Logger::new_to_file(log_level::LogLevel::Trace, String::from("test.log"), true);
+        let logger = Logger::new_to_file(
+            String::from("test"),
+            log_level::LogLevel::Trace,
+            String::from("test.log"),
+            true,
+        );
 
         assert_eq!(logger.write_to_console, true);
     }
 
     #[test]
     fn new_logger_to_file_which_does_not_write_to_console_should_disable_write_to_console() {
-        let logger =
-            Logger::new_to_file(log_level::LogLevel::Trace, String::from("test.log"), false);
+        let logger = Logger::new_to_file(
+            String::from("test"),
+            log_level::LogLevel::Trace,
+            String::from("test.log"),
+            false,
+        );
 
         assert_eq!(logger.write_to_console, false);
     }
 
     #[test]
     fn new_logger_to_file_should_have_correct_min_level() {
-        let logger =
-            Logger::new_to_file(log_level::LogLevel::Trace, String::from("test.log"), false);
+        let logger = Logger::new_to_file(
+            String::from("test"),
+            log_level::LogLevel::Trace,
+            String::from("test.log"),
+            false,
+        );
 
         assert_eq!(logger.min_level, log_level::LogLevel::Trace);
     }
@@ -212,7 +230,7 @@ mod tests {
 
     #[test]
     fn log_should_return_false_if_level_is_below_min_level() {
-        let mut logger = Logger::new(log_level::LogLevel::Error);
+        let mut logger = Logger::new(String::from("test"), log_level::LogLevel::Error);
 
         let result = logger.log(log_level::LogLevel::Debug, "test");
 
@@ -221,7 +239,7 @@ mod tests {
 
     #[test]
     fn log_should_return_true_if_level_is_above_min_level() {
-        let mut logger = Logger::new(log_level::LogLevel::Debug);
+        let mut logger = Logger::new(String::from("test"), log_level::LogLevel::Debug);
 
         let result = logger.log(log_level::LogLevel::Error, "test");
 
@@ -230,7 +248,7 @@ mod tests {
 
     #[test]
     fn log_should_return_true_if_level_is_equal_to_min_level() {
-        let mut logger = Logger::new(log_level::LogLevel::Error);
+        let mut logger = Logger::new(String::from("test"), log_level::LogLevel::Error);
 
         let result = logger.log(log_level::LogLevel::Error, "test");
 
