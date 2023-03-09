@@ -1,17 +1,17 @@
 use std::fs::{File, OpenOptions};
 use std::io::prelude::*;
 
-pub struct LogFile {
+pub(crate) struct LogFile {
     file: File,
 }
 
 impl LogFile {
-    pub fn new(path: &String) -> Self {
+    pub(crate) fn new(path: &str) -> Self {
         let file = OpenOptions::new()
             .write(true)
             .append(true)
             .create(true)
-            .open(path.clone())
+            .open(path)
             .unwrap_or_else(|e| {
                 panic!(
                     "Error opening log file: {}\nPath to log file was: {}",
@@ -22,7 +22,7 @@ impl LogFile {
         Self { file }
     }
 
-    pub fn write(&mut self, to_write: String) {
+    pub(crate) fn write(&mut self, to_write: &str) {
         self.file
             .write_all(to_write.as_bytes())
             .unwrap_or_else(|e| {

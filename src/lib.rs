@@ -193,7 +193,7 @@ impl Logger {
     }
 
     fn log_to_file(log_file: &mut LogFile, level: log_level::LogLevel, message: &str, name: &str) {
-        log_file.write(format!(
+        log_file.write(&format!(
             "[{}] [{}] [{}] {}\n",
             Logger::get_date_time(),
             name,
