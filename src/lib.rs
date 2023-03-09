@@ -5,33 +5,54 @@
 //! ## Write to the console
 //!
 //! ```
-//! use logger::Logger;
-//! use logger::log_level::LogLevel;
+//! use ultimate_logger::Logger;
+//! use ultimate_logger::log_level::LogLevel;
 //!
 //! let mut logger = Logger::new(String::from("example"), LogLevel::Trace);
 //!
-//! logger.info("This is an info message");
-//! logger.debug("This is a debug message");
 //! logger.trace("This is a trace message");
+//! logger.debug("This is a debug message");
+//! logger.info("This is an info message");
 //! logger.warning("This is a warning message");
 //! logger.error("This is an error message");
 //! logger.critical("This is a critical message");
+//! ```
+//!
+//! This will output the following to the console with appropriate colors:
+//!
+//! ```text
+//! [2020-05-01 12:00:00.000] [example] [trace] This is a trace message
+//! [2020-05-01 12:00:00.000] [example] [debug] This is a debug message
+//! [2020-05-01 12:00:00.000] [example] [info] This is an info message
+//! [2020-05-01 12:00:00.000] [example] [warning] This is a warning message
+//! [2020-05-01 12:00:00.000] [example] [error] This is an error message
+//! [2020-05-01 12:00:00.000] [example] [critical] This is a critical message
 //! ```
 //!
 //! ## Write to a file
 //!
 //! ```
-//! use logger::Logger;
-//! use logger::log_level::LogLevel;
+//! use ultimate_logger::Logger;
+//! use ultimate_logger::log_level::LogLevel;
 //!
 //! let mut logger = Logger::new_to_file(String::from("example"), LogLevel::Trace, String::from("log.txt"), true);
 //!
-//! logger.info("This is an info message");
-//! logger.debug("This is a debug message");
 //! logger.trace("This is a trace message");
+//! logger.debug("This is a debug message");
+//! logger.info("This is an info message");
 //! logger.warning("This is a warning message");
 //! logger.error("This is an error message");
 //! logger.critical("This is a critical message");
+//! ```
+//!
+//! Below is the text which will output to the file `log.txt`, and to the console. The console output will be colored.
+//! ```text
+//! [2020-05-01 12:00:00.000] [example] [trace] This is a trace message
+//! [2020-05-01 12:00:00.000] [example] [debug] This is a debug message
+//! [2020-05-01 12:00:00.000] [example] [info] This is an info message
+//! [2020-05-01 12:00:00.000] [example] [warning] This is a warning message
+//! [2020-05-01 12:00:00.000] [example] [error] This is an error message
+//! [2020-05-01 12:00:00.000] [example] [critical] This is a critical message
 //! ```
 //!
 //! # Features
@@ -42,7 +63,7 @@
 //! - Set a minimum log level
 //! - Colored output
 //! - Timestamps
-//! - Multiple loggers with different names are possible
+//! - Multiple loggers with different names
 
 mod log_file;
 pub mod log_level;
@@ -52,40 +73,6 @@ use colored::ColoredString;
 use log_file::LogFile;
 
 /// A logger that can write to a file and/or the console.
-///
-/// # Examples
-///
-/// ## Write to the console
-///
-/// ```
-/// use logger::Logger;
-/// use logger::log_level::LogLevel;
-///
-/// let mut logger = Logger::new(String::from("example"), LogLevel::Trace);
-///
-/// logger.info("This is an info message");
-/// logger.debug("This is a debug message");
-/// logger.trace("This is a trace message");
-/// logger.warning("This is a warning message");
-/// logger.error("This is an error message");
-/// logger.critical("This is a critical message");
-/// ```
-///
-/// ## Write to a file
-///
-/// ```
-/// use logger::Logger;
-/// use logger::log_level::LogLevel;
-///
-/// let mut logger = Logger::new_to_file(String::from("example"), LogLevel::Trace, String::from("log.txt"), true);
-///
-/// logger.info("This is an info message");
-/// logger.debug("This is a debug message");
-/// logger.trace("This is a trace message");
-/// logger.warning("This is a warning message");
-/// logger.error("This is an error message");
-/// logger.critical("This is a critical message");
-/// ```
 pub struct Logger {
     name: String,
     min_level: log_level::LogLevel,
@@ -105,13 +92,13 @@ impl Logger {
     /// # Example
     ///
     /// ```
-    /// use logger::Logger;
-    /// use logger::log_level::LogLevel;
+    /// use ultimate_logger::Logger;
+    /// use ultimate_logger::log_level::LogLevel;
     ///
-    /// let mut logger = Logger::new(String::from("example"), LogLevel::Trace);
+    /// let mut logger = Logger::new(String::from("example"), LogLevel::Warning);
     /// ```
     ///
-    /// This will create a logger that writes to the console and has the name "example" and the minimum log level "Trace".
+    /// This will create a logger that writes to the console and has the name "example" and the minimum log level "Warning".
     pub fn new(name: String, min_level: log_level::LogLevel) -> Self {
         Self {
             name,
@@ -136,13 +123,13 @@ impl Logger {
     /// # Example
     ///
     /// ```
-    /// use logger::Logger;
-    /// use logger::log_level::LogLevel;
+    /// use ultimate_logger::Logger;
+    /// use ultimate_logger::log_level::LogLevel;
     ///
-    /// let logger = Logger::new_to_file(String::from("example"), LogLevel::Trace, String::from("log.txt"), true);
+    /// let logger = Logger::new_to_file(String::from("example"), LogLevel::Warning, String::from("log.txt"), true);
     /// ```
     ///
-    /// This will create a logger that writes to the file "log.txt" and has the name "example" and the minimum log level "Trace".
+    /// This will create a logger that writes to the file "log.txt" and has the name "example" and the minimum log level "Warning".
     /// It will also write to the console, because `write_to_console_too` is set to `true`.
     ///
     /// # Panics
@@ -174,7 +161,7 @@ impl Logger {
         }
     }
 
-    /// Creates a new logger that writes to the console. The minimum log level is set to "Info".
+    /// Creates a new logger that writes to the console. The minimum log level is set to "Trace".
     ///
     /// # Arguments
     ///
@@ -183,14 +170,14 @@ impl Logger {
     /// # Example
     ///
     /// ```
-    /// use logger::Logger;
+    /// use ultimate_logger::Logger;
     ///
     /// let mut logger = Logger::new_default(String::from("example"));
     /// ```
     ///
-    /// This will create a logger that writes to the console, has the name "example" and the minimum log level "Info".
+    /// This will create a logger that writes to the console, has the name "example" and the minimum log level "Trace".
     pub fn new_default(name: String) -> Self {
-        Self::new(name, log_level::LogLevel::Info)
+        Self::new(name, log_level::LogLevel::Trace)
     }
 
     fn get_date_time() -> String {
@@ -238,40 +225,40 @@ impl Logger {
     /// ## Default log level
     ///
     /// ```
-    /// use logger::Logger;
-    /// use logger::log_level::LogLevel;
+    /// use ultimate_logger::Logger;
+    /// use ultimate_logger::log_level::LogLevel;
     ///
     /// let mut logger = Logger::new_default(String::from("example"));
     ///
-    /// logger.log(LogLevel::Info, "This is an info message.");
-    /// logger.log(LogLevel::Debug, "This is a debug message.");
     /// logger.log(LogLevel::Trace, "This is a trace message.");
+    /// logger.log(LogLevel::Debug, "This is a debug message.");
+    /// logger.log(LogLevel::Info, "This is an info message.");
     /// ```
     ///
     /// This will log the following messages:
-    /// [2020-12-31 23:59:59.999] [example] [info] This is an info message.
-    /// [2020-12-31 23:59:59.999] [example] [debug] This is a debug message.
     /// [2020-12-31 23:59:59.999] [example] [trace] This is a trace message.
+    /// [2020-12-31 23:59:59.999] [example] [debug] This is a debug message.
+    /// [2020-12-31 23:59:59.999] [example] [info] This is an info message.
     ///
-    /// All messages will be logged, because the minimum log level is the default "Info".
+    /// All messages will be logged, because the minimum log level is the default "Trace".
     ///
     /// ## Custom log level
     /// ```
-    /// use logger::Logger;
-    /// use logger::log_level::LogLevel;
+    /// use ultimate_logger::Logger;
+    /// use ultimate_logger::log_level::LogLevel;
     ///
     /// let mut logger = Logger::new(String::from("example"), LogLevel::Debug);
     ///
-    /// logger.log(LogLevel::Info, "This is an info message.");
-    /// logger.log(LogLevel::Debug, "This is a debug message.");
     /// logger.log(LogLevel::Trace, "This is a trace message.");
+    /// logger.log(LogLevel::Debug, "This is a debug message.");
+    /// logger.log(LogLevel::Info, "This is an info message.");
     /// ```
     ///
     /// This will log the following messages:
     /// [2020-12-31 23:59:59.999] [example] [debug] This is a debug message.
-    /// [2020-12-31 23:59:59.999] [example] [trace] This is a trace message.
+    /// [2020-12-31 23:59:59.999] [example] [info] This is an info message.
     ///
-    /// Only the messages with the log level "Debug" and "Trace" will be logged, because the minimum log level is "Debug".
+    /// Only the messages with the log level "Debug" and "Info" will be logged, because the minimum log level is "Debug".
     ///
     /// # Panics
     ///
@@ -294,74 +281,13 @@ impl Logger {
         false
     }
 
-    /// Logs a message with the log level "Info".
-    /// Returns `true` if the message was logged and `false` if the message wasn't logged because the log level was too low.
-    /// This is a shortcut for [`log`](#method.log) with the log level "Info".
-    /// See [`log`](#method.log) for more information.
-    ///
-    /// The message will only be logged if the minimum log level is "Info" (which is the default).
-    ///
-    /// # Arguments
-    ///
-    /// * `message` - The message.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use logger::Logger;
-    ///
-    /// let mut logger = Logger::new_default(String::from("example"));
-    ///
-    /// logger.info("This is an info message.");
-    /// ```
-    ///
-    /// This will log the following message:
-    /// [2020-12-31 23:59:59.999] [example] [info] This is an info message.\
-    ///
-    /// # Panics
-    ///
-    /// This function will panic if we try to log to a file and we can't write to the file.
-    pub fn info(&mut self, message: &str) -> bool {
-        self.log(log_level::LogLevel::Info, message)
-    }
-
-    /// Logs a message with the log level "Debug".
-    /// Returns `true` if the message was logged and `false` if the message wasn't logged because the log level was too low.
-    /// This is a shortcut for [`log`](#method.log) with the log level "Debug".
-    /// See [`log`](#method.log) for more information.
-    ///
-    /// The message will only be logged if the minimum log level is "Info" or "Debug".
-    ///
-    /// # Arguments
-    ///
-    /// * `message` - The message.
-    ///
-    /// # Example
-    ///
-    /// ```
-    /// use logger::Logger;
-    ///
-    /// let mut logger = Logger::new_default(String::from("example"));
-    ///
-    /// logger.debug("This is a debug message.");
-    /// ```
-    ///
-    /// This will log the following message:
-    /// [2020-12-31 23:59:59.999] [example] [debug] This is a debug message.
-    ///
-    /// # Panics
-    ///
-    /// This function will panic if we try to log to a file and we can't write to the file.
-    pub fn debug(&mut self, message: &str) -> bool {
-        self.log(log_level::LogLevel::Debug, message)
-    }
-
     /// Logs a message with the log level "Trace".
     /// Returns `true` if the message was logged and `false` if the message wasn't logged because the log level was too low.
     /// This is a shortcut for [`log`](#method.log) with the log level "Trace".
     /// See [`log`](#method.log) for more information.
     ///
-    /// The message will only be logged if the minimum log level is "Info", "Debug" or "Trace".
+    /// The message will only be logged if the minimum log level is "Trace".
+    /// This is the default minimum log level.
     ///
     /// # Arguments
     ///
@@ -370,7 +296,7 @@ impl Logger {
     /// # Example
     ///
     /// ```
-    /// use logger::Logger;
+    /// use ultimate_logger::Logger;
     ///
     /// let mut logger = Logger::new_default(String::from("example"));
     ///
@@ -387,12 +313,12 @@ impl Logger {
         self.log(log_level::LogLevel::Trace, message)
     }
 
-    /// Logs a message with the log level "Warning".
+    /// Logs a message with the log level "Debug".
     /// Returns `true` if the message was logged and `false` if the message wasn't logged because the log level was too low.
-    /// This is a shortcut for [`log`](#method.log) with the log level "Warning".
+    /// This is a shortcut for [`log`](#method.log) with the log level "Debug".
     /// See [`log`](#method.log) for more information.
     ///
-    /// The message will only be logged if the minimum log level is "Info", "Debug", "Trace" or "Warning".
+    /// The message will only be logged if the minimum log level is "Trace" or "Debug".
     ///
     /// # Arguments
     ///
@@ -401,7 +327,69 @@ impl Logger {
     /// # Example
     ///
     /// ```
-    /// use logger::Logger;
+    /// use ultimate_logger::Logger;
+    ///
+    /// let mut logger = Logger::new_default(String::from("example"));
+    ///
+    /// logger.debug("This is a debug message.");
+    /// ```
+    ///
+    /// This will log the following message:
+    /// [2020-12-31 23:59:59.999] [example] [debug] This is a debug message.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if we try to log to a file and we can't write to the file.
+    pub fn debug(&mut self, message: &str) -> bool {
+        self.log(log_level::LogLevel::Debug, message)
+    }
+
+    /// Logs a message with the log level "Info".
+    /// Returns `true` if the message was logged and `false` if the message wasn't logged because the log level was too low.
+    /// This is a shortcut for [`log`](#method.log) with the log level "Info".
+    /// See [`log`](#method.log) for more information.
+    ///
+    /// The message will only be logged if the minimum log level is "Trace", "Debug" or "Info".
+    ///
+    /// # Arguments
+    ///
+    /// * `message` - The message.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use ultimate_logger::Logger;
+    ///
+    /// let mut logger = Logger::new_default(String::from("example"));
+    ///
+    /// logger.info("This is an info message.");
+    /// ```
+    ///
+    /// This will log the following message:
+    /// [2020-12-31 23:59:59.999] [example] [info] This is an info message.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if we try to log to a file and we can't write to the file.
+    pub fn info(&mut self, message: &str) -> bool {
+        self.log(log_level::LogLevel::Info, message)
+    }
+
+    /// Logs a message with the log level "Warning".
+    /// Returns `true` if the message was logged and `false` if the message wasn't logged because the log level was too low.
+    /// This is a shortcut for [`log`](#method.log) with the log level "Warning".
+    /// See [`log`](#method.log) for more information.
+    ///
+    /// The message will only be logged if the minimum log level is "Trace", "Debug", "Info" or "Warning".
+    ///
+    /// # Arguments
+    ///
+    /// * `message` - The message.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use ultimate_logger::Logger;
     ///
     /// let mut logger = Logger::new_default(String::from("example"));
     ///
@@ -423,7 +411,7 @@ impl Logger {
     /// This is a shortcut for [`log`](#method.log) with the log level "Error".
     /// See [`log`](#method.log) for more information.
     ///
-    /// The message will only be logged if the minimum log level is "Info", "Debug", "Trace", "Warning" or "Error".
+    /// The message will only be logged if the minimum log level is "Trace", "Debug", "Info", "Warning" or "Error".
     ///
     /// # Arguments
     ///
@@ -432,7 +420,7 @@ impl Logger {
     /// # Example
     ///
     /// ```
-    /// use logger::Logger;
+    /// use ultimate_logger::Logger;
     ///
     /// let mut logger = Logger::new_default(String::from("example"));
     ///
@@ -453,8 +441,7 @@ impl Logger {
     /// Returns `true` if the message was logged and `false` if the message wasn't logged because the log level was too low.
     /// This is a shortcut for [`log`](#method.log) with the log level "Critical".
     /// See [`log`](#method.log) for more information.
-    /// The message will always be logged.
-    /// This is the highest log level.
+    /// The message will always be logged, because this is the highest log level.
     ///
     /// # Arguments
     ///
@@ -463,7 +450,7 @@ impl Logger {
     /// # Example
     ///
     /// ```
-    /// use logger::Logger;
+    /// use ultimate_logger::Logger;
     ///
     /// let mut logger = Logger::new_default(String::from("example"));
     ///
@@ -491,21 +478,21 @@ mod tests {
 
     #[test]
     fn new_logger_should_have_correct_min_level() {
-        let logger = Logger::new(String::from("test"), log_level::LogLevel::Trace);
+        let logger = Logger::new(String::from("test"), log_level::LogLevel::Warning);
 
-        assert_eq!(logger.min_level, log_level::LogLevel::Trace);
+        assert_eq!(logger.min_level, log_level::LogLevel::Warning);
     }
 
     #[test]
     fn new_logger_should_write_to_console() {
-        let logger = Logger::new(String::from("test"), log_level::LogLevel::Trace);
+        let logger = Logger::new(String::from("test"), log_level::LogLevel::Warning);
 
         assert_eq!(logger.write_to_console, true);
     }
 
     #[test]
     fn new_logger_should_not_write_to_file() {
-        let logger = Logger::new(String::from("test"), log_level::LogLevel::Trace);
+        let logger = Logger::new(String::from("test"), log_level::LogLevel::Warning);
 
         assert_eq!(logger.write_to_file, false);
     }
@@ -513,10 +500,10 @@ mod tests {
     // Logger::new_default()
 
     #[test]
-    fn new_default_logger_should_have_level_info() {
+    fn new_default_logger_should_have_level_trace() {
         let logger = Logger::new_default(String::from("test"));
 
-        assert_eq!(logger.min_level, log_level::LogLevel::Info);
+        assert_eq!(logger.min_level, log_level::LogLevel::Trace);
     }
 
     // Logger::new_to_file()
@@ -525,7 +512,7 @@ mod tests {
     fn new_logger_to_file_should_enable_write_to_file() {
         let logger = Logger::new_to_file(
             String::from("test"),
-            log_level::LogLevel::Trace,
+            log_level::LogLevel::Warning,
             String::from("test.log"),
             false,
         );
@@ -537,7 +524,7 @@ mod tests {
     fn new_logger_to_file_which_also_writes_to_console_should_enable_write_to_console() {
         let logger = Logger::new_to_file(
             String::from("test"),
-            log_level::LogLevel::Trace,
+            log_level::LogLevel::Warning,
             String::from("test.log"),
             true,
         );
@@ -549,7 +536,7 @@ mod tests {
     fn new_logger_to_file_which_does_not_write_to_console_should_disable_write_to_console() {
         let logger = Logger::new_to_file(
             String::from("test"),
-            log_level::LogLevel::Trace,
+            log_level::LogLevel::Warning,
             String::from("test.log"),
             false,
         );
@@ -561,12 +548,12 @@ mod tests {
     fn new_logger_to_file_should_have_correct_min_level() {
         let logger = Logger::new_to_file(
             String::from("test"),
-            log_level::LogLevel::Trace,
+            log_level::LogLevel::Warning,
             String::from("test.log"),
             false,
         );
 
-        assert_eq!(logger.min_level, log_level::LogLevel::Trace);
+        assert_eq!(logger.min_level, log_level::LogLevel::Warning);
     }
 
     // Logger::get_colored_level_name()
