@@ -74,11 +74,11 @@ Below is the text which will output to the file `log.txt`, and to the console. T
 
 ## Documentation
 
-[Documentation][https://docs.rs/ultimate_logger]
+[Documentation](https://docs.rs/ultimate_logger)
 
 ## Crates.io
 
-[Crates.io][https://crates.io/crates/ultimate_logger]
+[Crates.io](https://crates.io/crates/ultimate_logger)
 
 ## License
 
