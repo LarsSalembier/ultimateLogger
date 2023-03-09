@@ -10,7 +10,7 @@ Multiple loggers with different names can be made. Each logger can have its own 
 
 ### Write to the console
 
-```
+```rust
 use ultimate_logger::Logger;
 use ultimate_logger::log_level::LogLevel;
 
@@ -37,7 +37,7 @@ This will output the following to the console with appropriate colors:
 
 ### Write to a file
 
-```
+```rust
 use ultimate_logger::Logger;
 use ultimate_logger::log_level::LogLevel;
 
