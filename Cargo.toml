@@ -6,7 +6,7 @@ authors = ["Lars Salembier"]
 description = "A simple logger for Rust"
 repository = "https://github.com/LarsSalembier/ultimateLogger"
 readme = "README.md"
-keywords = ["logger", "logging", "log", "rust", "simple", "ultimate"]
+keywords = ["logger", "logging", "log", "simple", "ultimate"]
 categories = ["logging"]
 
 version = "1.0.0"
