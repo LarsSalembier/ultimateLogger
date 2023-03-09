@@ -1,7 +1,17 @@
 [package]
 name = "ultimate_logger"
-version = "0.1.0"
+license = "GNU General Public License v3.0"
+license-file = "LICENSE"
+authors = ["Lars Salembier"]
+description = "A simple logger for Rust"
+repository = "https://github.com/LarsSalembier/ultimateLogger"
+readme = "README.md"
+keywords = ["logger", "logging", "log", "rust", "simple", "ultimate"]
+categories = ["logging"]
+
+version = "1.0.0"
 edition = "2021"
+rust-version = "1.56.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
