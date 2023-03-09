@@ -1,6 +1,6 @@
 [package]
 name = "ultimate_logger"
-license = "GNU General Public License v3.0"
+license = "GPL-3.0-only"
 license-file = "LICENSE"
 authors = ["Lars Salembier"]
 description = "A simple logger for Rust"
